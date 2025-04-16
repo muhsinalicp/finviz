@@ -5,12 +5,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const uri = getEnv("MONGO_URI");
   await connectToDB(uri);
 
-  const id = params?.id;
+  const { id } = await params;
 
   if (!id) {
     return NextResponse.json(
@@ -26,12 +26,12 @@ export async function DELETE(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const uri = getEnv("MONGO_URI");
   await connectToDB(uri);
 
-  const id = params.id;
+  const { id } = await params;
   const body = await req.json();
 
   if (
