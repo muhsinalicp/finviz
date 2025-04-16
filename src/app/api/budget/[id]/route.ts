@@ -31,7 +31,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     await connectToDB(getEnv("MONGO_URI"));
@@ -40,7 +40,7 @@ export async function PUT(
 
     if (typeof budgetAmount !== "number" || budgetAmount <= 0) {
       return NextResponse.json(
-        { error: "Invalid or missing `budgetAmount`" },
+        { error: "Invalid or missing budgetAmount" },
         { status: 400 }
       );
     }
