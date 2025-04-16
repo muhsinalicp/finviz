@@ -5,7 +5,7 @@ import { getEnv } from "@/utils/getEnv";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: any } }
 ) {
   const { id } = params;
 
