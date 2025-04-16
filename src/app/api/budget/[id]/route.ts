@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  const { id } = params;
+  const { id } = context.params;
   await Budget.findByIdAndDelete(id);
 
   return NextResponse.json({ message: "Budget deleted" });
