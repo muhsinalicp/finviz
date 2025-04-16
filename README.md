@@ -37,3 +37,5 @@ FinViz is a simple, elegant web application for managing personal finances. It a
 ---
 
 ## 📁 Project Structure
+
+src/ ├── app/ │ ├── dashboard/ │ ├── transactions/ │ ├── budgets/ │ └── api/ ├── components/ ├── models/ ├── db/ └── utils/
