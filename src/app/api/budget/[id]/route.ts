@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { NextApiResponse } from "next"; // optional, for type safety
 import Budget from "@/models/budget";
 import connectToDB from "@/db/connection";
 import { getEnv } from "@/utils/getEnv";
 
-// 👇 This is the key: explicitly type context properly
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   try {
     await connectToDB(getEnv("MONGO_URI"));
@@ -21,6 +19,9 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Budget deleted successfully" });
   } catch (error) {
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
