@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const transaction = await Transaction.create({
+  await Transaction.create({
     amount: body.amount,
     date: body.date,
     description: body.description,
@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
   });
 
   if (budget) {
-    budget.actualSpent += body.amount;
+    // budget.actualSpent += body.amount;
+    budget.actualSpent += Number(body.amount);
     await budget.save();
   }
 

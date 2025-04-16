@@ -17,7 +17,7 @@ interface renderProps {
   render: boolean;
 }
 export default function BudgetCards({ render }: renderProps) {
-  const [change, setChange] = useState(false);
+  const [change, setChange] = useState<boolean>(false);
 
   const [data, setdata] = useState([
     {
@@ -39,7 +39,7 @@ export default function BudgetCards({ render }: renderProps) {
   async function deleteBudget(id: String) {
     try {
       const res = await axios.delete(`/api/budget/${id}`);
-      if (res.data.message === "Budget deleted") {
+      if (res.data.message === "Budget deleted successfully") {
         setChange(!change);
         toast.success("budget deleted successfully");
       }
@@ -63,7 +63,7 @@ export default function BudgetCards({ render }: renderProps) {
             </CardTitle>
             <div className="absolute right-4 top-4">
               <Badge
-                onClick={(e) => deleteBudget(_id)}
+                onClick={() => deleteBudget(_id)}
                 variant="outline"
                 className="flex gap-1 rounded-lg text-xs p-2 hover:bg-secondary"
               >
