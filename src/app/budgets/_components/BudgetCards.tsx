@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
@@ -20,7 +19,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -36,6 +34,21 @@ interface Budget {
 interface BudgetCardsProps {
   render: boolean;
 }
+
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 export default function BudgetCards({ render }: BudgetCardsProps) {
   const [budgets, setBudgets] = useState<Budget[]>([]);
@@ -90,13 +103,27 @@ export default function BudgetCards({ render }: BudgetCardsProps) {
       <section className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {budgets.map((b) => {
           const pct = Math.round((b.actualSpent / b.budgetAmount) * 100);
+          const thisMonth = new Date().getMonth();
           return (
-            <Card key={b._id} className="@container/card">
+            <Card
+              key={b._id}
+              className={`@container/card ${pct >= 100 ? "bg-red-300" : ""} ${
+                thisMonth > Number(b.month[6]) - 1 ? "bg-yellow-300" : ""
+              } `}
+            >
               <CardHeader className="relative">
-                <CardDescription>Budget ({b.month})</CardDescription>
+                <CardDescription>
+                  Budget of {b.category} for{" "}
+                  {monthNames[Number(b.month[6]) - 1]} ({b.month.split("-")[0]})
+                </CardDescription>
                 <CardTitle className="text-2xl font-semibold tabular-nums">
                   ₹{b.budgetAmount}
                 </CardTitle>
+                {thisMonth > Number(b.month[6]) - 1 && (
+                  <CardTitle className="text-xl font-semibold tabular-nums">
+                    Expired
+                  </CardTitle>
+                )}
                 <div className="absolute top-4 right-4 flex space-x-1">
                   <Badge
                     variant="outline"
@@ -122,7 +149,11 @@ export default function BudgetCards({ render }: BudgetCardsProps) {
                   {b.actualSpent} / {b.budgetAmount} spent
                 </div>
                 <Progress value={pct} />
-                <div className="text-muted-foreground">
+                <div
+                  className={`text-muted-foreground ${
+                    pct >= 100 ? "text-black font-bold" : ""
+                  }`}
+                >
                   You’ve used {pct}% of your <strong>{b.category}</strong>{" "}
                   budget
                 </div>
@@ -137,7 +168,8 @@ export default function BudgetCards({ render }: BudgetCardsProps) {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                Edit Budget: {editing.category} ({editing.month})
+                Edit Budget of {editing.category} in{" "}
+                {monthNames[Number(editing.month[6])]}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 my-4">
