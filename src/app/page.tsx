@@ -13,7 +13,7 @@ export default function Home() {
     pieData: [
       {
         category: "",
-        amount: "",
+        amount: 0,
         fill: "",
       },
     ],
