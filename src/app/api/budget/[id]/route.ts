@@ -5,12 +5,13 @@ import { getEnv } from "@/utils/getEnv";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: any } }
+  context: { params: { id: string } } // ✅ must be named context
 ) {
-  const { id } = params;
+  const { id } = context.params;
 
   try {
     await connectToDB(getEnv("MONGO_URI"));
+
     const deleted = await Budget.findByIdAndDelete(id);
 
     if (!deleted) {
