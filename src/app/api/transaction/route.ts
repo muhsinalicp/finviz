@@ -13,50 +13,59 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const uri = getEnv("MONGO_URI");
-  await connectToDB(uri);
+  try {
+    const uri = getEnv("MONGO_URI");
+    await connectToDB(uri);
 
-  const body = await req.json();
+    const body = await req.json();
+    const { amount, date, description, category } = body;
 
-  if (
-    !body ||
-    !body.amount ||
-    !body.date ||
-    !body.description ||
-    !body.category
-  ) {
-    return NextResponse.json(
-      { message: "Missing required fields" },
-      { status: 400 }
-    );
-  }
-
-  const transactionMonth = new Date(body.date).toISOString().slice(0, 7);
-
-  const budget = await Budget.findOne({
-    category: body.category,
-    month: transactionMonth,
-  });
-
-  if (budget) {
-    if (budget.budgetAmount < budget.actualSpent + Number(body.amount)) {
-      console.log(
-        budget.budgetAmount,
-        budget.actualSpent + Number(body.amount)
+    if (!amount || !date || !description || !category) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
       );
-      return NextResponse.json({ message: "budget exceeded" }, { status: 400 });
     }
 
-    budget.actualSpent += Number(body.amount);
-    await budget.save();
+    const transactionMonth = new Date(date).toISOString().slice(0, 7);
+
+    const budget = await Budget.findOne({
+      category,
+      month: transactionMonth,
+    });
+
+    if (budget) {
+      const totalAfterTxn = budget.actualSpent + Number(amount);
+      if (totalAfterTxn > budget.budgetAmount) {
+        return NextResponse.json(
+          { message: "Budget exceeded" },
+          { status: 400 }
+        );
+      }
+    }
+
+    const transaction = await Transaction.create({
+      amount,
+      date,
+      description,
+      category,
+    });
+
+    if (budget) {
+      budget.actualSpent += Number(amount);
+      budget.transactions.push(transaction._id);
+      await budget.save();
+    }
+
+    return NextResponse.json(
+      { message: "Transaction created" },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Transaction POST error:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
   }
-
-  await Transaction.create({
-    amount: body.amount,
-    date: body.date,
-    description: body.description,
-    category: body.category,
-  });
-
-  return NextResponse.json({ message: "Transaction created" });
 }

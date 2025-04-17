@@ -18,6 +18,10 @@ const BudgetSchema = new Schema(
       type: Number,
       default: 0,
     },
+    transactions: {
+      type: [{ type: Schema.Types.ObjectId, ref: "Transaction" }],
+      default: [],
+    },
   },
   { timestamps: true }
 );
