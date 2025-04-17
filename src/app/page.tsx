@@ -46,7 +46,6 @@ export default function Home() {
     const fetchData = async () => {
       const res = await axios.get("/api/datas");
       setData(res.data);
-      console.log(res.data);
     };
     fetchData();
   }, []);
