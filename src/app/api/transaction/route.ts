@@ -31,13 +31,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  await Transaction.create({
-    amount: body.amount,
-    date: body.date,
-    description: body.description,
-    category: body.category,
-  });
-
   const transactionMonth = new Date(body.date).toISOString().slice(0, 7);
 
   const budget = await Budget.findOne({
@@ -46,10 +39,24 @@ export async function POST(req: NextRequest) {
   });
 
   if (budget) {
-    // budget.actualSpent += body.amount;
+    if (budget.budgetAmount < budget.actualSpent + Number(body.amount)) {
+      console.log(
+        budget.budgetAmount,
+        budget.actualSpent + Number(body.amount)
+      );
+      return NextResponse.json({ message: "budget exceeded" }, { status: 400 });
+    }
+
     budget.actualSpent += Number(body.amount);
     await budget.save();
   }
+
+  await Transaction.create({
+    amount: body.amount,
+    date: body.date,
+    description: body.description,
+    category: body.category,
+  });
 
   return NextResponse.json({ message: "Transaction created" });
 }

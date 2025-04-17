@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -62,13 +61,21 @@ export default function TransactionForm({ setRender, render }: renderProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const res = await axios.post("api/transaction", values);
-    if (res.data.message === "Transaction created") {
-      form.reset();
-      toast("Transaction created");
-      setRender(!render);
-    } else {
-      toast("Something went wrong");
+    try {
+      const res = await axios.post("api/transaction", values);
+      if (res.data.message === "Transaction created") {
+        form.reset();
+        toast("Transaction created");
+        setRender(!render);
+      } else {
+        toast("Something went wrong");
+      }
+    } catch (e: any) {
+      if (e?.response?.data?.message) {
+        toast.error(`${e.response.data.message}`);
+      } else {
+        toast.error(" Failed to save budget. Please try again.");
+      }
     }
   }
 

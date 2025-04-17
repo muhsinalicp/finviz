@@ -43,7 +43,7 @@ export default function BudgetForm({ render, setRender }: budgetFormProps) {
     resolver: zodResolver(schema),
     defaultValues: {
       category: "",
-      month: new Date().toISOString().slice(0, 7), // YYYY-MM
+      month: new Date().toISOString().slice(0, 7),
       budgetAmount: "",
     },
   });
@@ -60,7 +60,6 @@ export default function BudgetForm({ render, setRender }: budgetFormProps) {
         toast.error("Something went wrong.");
       }
     } catch (err: any) {
-      // check if the error has a response from server
       if (err.response && err.response.data?.error) {
         toast.error(`${err.response.data.error}`);
       } else {
