@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { set } from "mongoose";
 
 interface Budget {
   _id: string;
@@ -56,11 +57,21 @@ export default function BudgetCards({ render }: BudgetCardsProps) {
 
   const [editing, setEditing] = useState<Budget | null>(null);
   const [newAmount, setNewAmount] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    axios.get<Budget[]>("/api/budget").then((res) => {
-      setBudgets(res.data);
-    });
+    setLoading(true);
+    axios
+      .get<Budget[]>("/api/budget")
+      .then((res) => {
+        setBudgets(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch budgets:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [change, render]);
 
   async function deleteBudget(id: string) {
@@ -96,6 +107,14 @@ export default function BudgetCards({ render }: BudgetCardsProps) {
       const msg = err.response?.data?.error || "Failed to update budget";
       toast.error(msg);
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex  justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-gray-900"></div>
+      </div>
+    );
   }
 
   return (

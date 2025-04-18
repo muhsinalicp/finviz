@@ -6,6 +6,8 @@ import { BarChartLabel } from "./components/BarCharts";
 import SummaryCards from "./components/SummaryCards";
 import { PieCharts } from "./components/PieChart";
 import LastTrans from "./components/LastTrans";
+import { toast } from "sonner";
+import { set } from "mongoose";
 
 export default function Home() {
   const [data, setData] = useState({
@@ -42,13 +44,31 @@ export default function Home() {
     ],
   });
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await axios.get("/api/datas");
-      setData(res.data);
-    };
-    fetchData();
+    setLoading(true);
+    try {
+      const fetchData = async () => {
+        const res = await axios.get("/api/datas");
+        setData(res.data);
+        setLoading(false);
+      };
+      fetchData();
+    } catch (error: any) {
+      const mes = error?.response?.data?.error || "Failed to fetch data";
+      toast.error(mes);
+      setLoading(false);
+    }
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <section className="py-8 pr-8 space-y-4">

@@ -55,17 +55,21 @@ function TransactionsList({ render }: renderProps) {
   });
 
   const [change, setChange] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const res = await axios.get("/api/transaction");
         setTransactions(res.data);
+        setLoading(false);
       } catch (error: any) {
         const i = error?.response?.data?.error;
         {
           i && toast.error(i);
         }
+        setLoading(false);
       }
     };
     fetchData();
@@ -93,6 +97,14 @@ function TransactionsList({ render }: renderProps) {
       const msg = err.response?.data?.message || "Failed to update transaction";
       toast.error(msg);
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-gray-900"></div>
+      </div>
+    );
   }
 
   return (
