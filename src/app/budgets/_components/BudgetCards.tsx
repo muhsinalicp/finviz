@@ -121,7 +121,9 @@ export default function BudgetCards({ render }: BudgetCardsProps) {
     <>
       <section className="grid gap-4 grid-cols-1 md:grid-cols-3">
         {budgets.map((b) => {
-          const pct = Math.round((b.actualSpent / b.budgetAmount) * 100);
+          const pct = Number(
+            ((b.actualSpent / b.budgetAmount) * 100).toFixed(2)
+          );
           const thisMonth = new Date().getMonth();
           return (
             <Card
