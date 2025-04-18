@@ -82,6 +82,12 @@ export async function PUT(
     });
 
     if (oldBudget) {
+      if (oldBudget.actualSpent + newAmount > oldBudget.budgetAmount) {
+        return NextResponse.json(
+          { message: `Budget exceeded than ${oldBudget.budgetAmount}` },
+          { status: 400 }
+        );
+      }
       oldBudget.actualSpent += newAmount;
       oldBudget.save();
     }

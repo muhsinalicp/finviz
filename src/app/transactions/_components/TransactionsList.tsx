@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { FormControl } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -59,8 +58,15 @@ function TransactionsList({ render }: renderProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get("/api/transaction");
-      setTransactions(res.data);
+      try {
+        const res = await axios.get("/api/transaction");
+        setTransactions(res.data);
+      } catch (error: any) {
+        const i = error?.response?.data?.error;
+        {
+          i && toast.error(i);
+        }
+      }
     };
     fetchData();
   }, [render, change]);
@@ -75,13 +81,17 @@ function TransactionsList({ render }: renderProps) {
   }
 
   async function handleUpdate(id: string) {
-    const res = await axios.put(`/api/transaction/${id}`, editData);
-    if (res.data.message === "Transaction updated") {
-      setChange(!change);
-      toast.success("Transaction updated");
-      setEditingId(null);
-    } else {
-      toast.error("Something went wrong");
+    try {
+      const res = await axios.put(`/api/transaction/${id}`, editData);
+      if (res.data.message === "Transaction updated") {
+        setChange(!change);
+        toast.success("Transaction updated");
+        setEditingId(null);
+      }
+    } catch (err: any) {
+      console.log(err);
+      const msg = err.response?.data?.message || "Failed to update transaction";
+      toast.error(msg);
     }
   }
 
