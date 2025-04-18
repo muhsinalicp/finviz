@@ -1,6 +1,6 @@
 "use client";
 
-import { Pie, PieChart } from "recharts";
+import { Label, Pie, PieChart } from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -9,6 +9,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useMemo } from "react";
 
 const chartConfig = {
   visitors: {
@@ -45,6 +46,9 @@ interface pieData {
 }
 
 export function PieCharts({ pieData }: pieData) {
+  const totalVisitors = useMemo(() => {
+    return pieData.reduce((acc, curr) => acc + curr.amount, 0);
+  }, []);
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
@@ -57,10 +61,94 @@ export function PieCharts({ pieData }: pieData) {
         >
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <Pie data={pieData} dataKey="amount" label nameKey="category" />
+            <Pie
+              data={pieData}
+              dataKey="amount"
+              nameKey="category"
+              innerRadius={60}
+              strokeWidth={50}
+            >
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          className="fill-foreground text-3xl font-bold"
+                        >
+                          ₹{totalVisitors.toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 24}
+                          className="fill-muted-foreground"
+                        >
+                          Total Expenses
+                        </tspan>
+                      </text>
+                    );
+                  }
+                }}
+              />
+            </Pie>
           </PieChart>
         </ChartContainer>
       </CardContent>
     </Card>
   );
 }
+
+// export function Component() {
+//   return (
+//           <PieChart>
+//             <ChartTooltip
+//               cursor={false}
+//               content={<ChartTooltipContent hideLabel />}
+//             />
+//             <Pie
+//               data={chartData}
+//               dataKey="visitors"
+//               nameKey="browser"
+//               innerRadius={60}
+//               strokeWidth={5}
+//             >
+//               <Label
+//                 content={({ viewBox }) => {
+//                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+//                     return (
+//                       <text
+//                         x={viewBox.cx}
+//                         y={viewBox.cy}
+//                         textAnchor="middle"
+//                         dominantBaseline="middle"
+//                       >
+//                         <tspan
+//                           x={viewBox.cx}
+//                           y={viewBox.cy}
+//                           className="fill-foreground text-3xl font-bold"
+//                         >
+//                           {totalVisitors.toLocaleString()}
+//                         </tspan>
+//                         <tspan
+//                           x={viewBox.cx}
+//                           y={(viewBox.cy || 0) + 24}
+//                           className="fill-muted-foreground"
+//                         >
+//                           Visitors
+//                         </tspan>
+//                       </text>
+//                     );
+//                   }
+//                 }}
+//               />
+//             </Pie>
+//           </PieChart>
+//   );
+// }

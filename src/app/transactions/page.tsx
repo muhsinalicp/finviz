@@ -7,7 +7,7 @@ function page() {
   const [render, setRender] = useState<boolean>(false);
 
   return (
-    <section className="w-full pr-8 pt-8 space-y-4">
+    <section className="py-8 pr-8 space-y-4">
       <TransactionsList render={render} />
       <TransactionForm render={render} setRender={setRender} />
     </section>

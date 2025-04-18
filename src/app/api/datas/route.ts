@@ -25,7 +25,14 @@ const monthNames = [
 //     shopping: "#FFA69E",      // Peach
 //     other: "#BDBDBD",         // Gray
 
-const colors = ["#FF6B6B", "#4ECDC4", "#FFD166", "#6A4C93"];
+const colors = [
+  "#299d8f",
+  "#f3a462",
+  "#e8c467",
+  "#264653",
+  "#2a9d8f",
+  "#e76f51",
+];
 
 export async function GET(req: NextRequest) {
   const uri = getEnv("MONGO_URI");

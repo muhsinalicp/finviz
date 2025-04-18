@@ -108,126 +108,131 @@ function TransactionsList({ render }: renderProps) {
   }
 
   return (
-    <Table>
-      <TableCaption>your recent transactions.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Date</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Category</TableHead>
-          <TableHead className="w-[100px]">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {transactions.map(({ _id, category, description, amount, date }) => (
-          <TableRow key={_id}>
-            {editingId === _id ? (
-              <>
-                <TableCell className="font-medium">
-                  <input
-                    type="date"
-                    placeholder="edit date"
-                    className="border rounded px-2 py-1 w-full"
-                    value={editData.date}
-                    onChange={(e) =>
-                      setEditData({ ...editData, date: e.target.value })
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <input
-                    placeholder="edit description"
-                    className="border rounded px-2 py-1 w-full"
-                    value={editData.description}
-                    onChange={(e) =>
-                      setEditData({ ...editData, description: e.target.value })
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <input
-                    type="number"
-                    placeholder="edit amount"
-                    className="border rounded px-2 py-1 w-full"
-                    value={editData.amount}
-                    onChange={(e) =>
-                      setEditData({
-                        ...editData,
-                        amount: Number(e.target.value),
-                      })
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <Select
-                    defaultValue={category}
-                    onValueChange={(e) => {
-                      setEditData({ ...editData, category: e });
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="food">Food</SelectItem>
-                      <SelectItem value="transport">Transport</SelectItem>
-                      <SelectItem value="entertainment">
-                        Entertainment
-                      </SelectItem>
-                      <SelectItem value="utilities">Utilities</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-                <TableCell className="space-x-1 text-right">
-                  <Button onClick={() => handleUpdate(_id)} variant="default">
-                    Save
-                  </Button>
-                  <Button
-                    onClick={() => setEditingId(null)}
-                    variant="secondary"
-                  >
-                    Cancel
-                  </Button>
-                </TableCell>
-              </>
-            ) : (
-              <>
-                <TableCell className="font-medium">
-                  {date.split("T")[0]}
-                </TableCell>
-                <TableCell>{description}</TableCell>
-                <TableCell>{amount}</TableCell>
-                <TableCell>{category}</TableCell>
-                <TableCell className="text-right space-x-1 py-2">
-                  <Button
-                    onClick={() => {
-                      setEditingId(_id);
-                      setEditData({
-                        amount,
-                        description,
-                        category,
-                        date: date.split("T")[0],
-                      });
-                    }}
-                    variant="outline"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => deleteTransaction(_id)}
-                    variant="destructive"
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </>
-            )}
+    <section className="w-[100%]">
+      <Table className="w-full">
+        <TableCaption>your recent transactions.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Date</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead className="w-[100px]">Actions</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {transactions.map(({ _id, category, description, amount, date }) => (
+            <TableRow key={_id}>
+              {editingId === _id ? (
+                <>
+                  <TableCell className="font-medium">
+                    <input
+                      type="date"
+                      placeholder="edit date"
+                      className="border rounded px-2 py-1 w-full"
+                      value={editData.date}
+                      onChange={(e) =>
+                        setEditData({ ...editData, date: e.target.value })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <input
+                      placeholder="edit description"
+                      className="border rounded px-2 py-1 w-full"
+                      value={editData.description}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          description: e.target.value,
+                        })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <input
+                      type="number"
+                      placeholder="edit amount"
+                      className="border rounded px-2 py-1 w-full"
+                      value={editData.amount}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          amount: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      defaultValue={category}
+                      onValueChange={(e) => {
+                        setEditData({ ...editData, category: e });
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="food">Food</SelectItem>
+                        <SelectItem value="transport">Transport</SelectItem>
+                        <SelectItem value="entertainment">
+                          Entertainment
+                        </SelectItem>
+                        <SelectItem value="utilities">Utilities</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell className="space-x-1 text-right">
+                    <Button onClick={() => handleUpdate(_id)} variant="default">
+                      Save
+                    </Button>
+                    <Button
+                      onClick={() => setEditingId(null)}
+                      variant="secondary"
+                    >
+                      Cancel
+                    </Button>
+                  </TableCell>
+                </>
+              ) : (
+                <>
+                  <TableCell className="font-medium">
+                    {date.split("T")[0]}
+                  </TableCell>
+                  <TableCell>{description}</TableCell>
+                  <TableCell>{amount}</TableCell>
+                  <TableCell>{category}</TableCell>
+                  <TableCell className="text-right space-x-1 py-2">
+                    <Button
+                      onClick={() => {
+                        setEditingId(_id);
+                        setEditData({
+                          amount,
+                          description,
+                          category,
+                          date: date.split("T")[0],
+                        });
+                      }}
+                      variant="outline"
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => deleteTransaction(_id)}
+                      variant="destructive"
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </>
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </section>
   );
 }
 
